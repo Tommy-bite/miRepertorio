@@ -6,10 +6,7 @@ const router = Router();
 // Define tus rutas aquí
 router.get('/', cancionesController.getCanciones);
 router.post('/' , cancionesController.createCancion)
-
-router.delete('/:uid' ,  (req, res) => {
-    res.json({ ok: "true" });
-})
+router.delete('/:id' , cancionesController.deleteCancion)
 
 router.put('/:uid' ,  (req, res) => {
     res.json({ ok: "true" });

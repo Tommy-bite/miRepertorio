@@ -52,11 +52,29 @@ const updateCancion = (req, res) => {
 };
 
 // Eliminar una canción por ID
-const deleteCancion = (req, res) => {
+const deleteCancion = async (req, res) => {
     const { id } = req.params;
-    // Lógica para eliminar una canción por ID
-    res.json({ message: `Canción con ID: ${id} eliminada` });
+
+    if (!id) {
+        return res.status(400).json({ message: "El ID es obligatorio" });
+    }
+
+    try {
+        const cancion = await modelCanciones.getCancionById(id);
+
+        if (!cancion) {
+            return res.status(400).json({ message: "No se puede eliminar esta canción porque no existe" });
+        }
+
+        await modelCanciones.deleteCancion(id);
+
+        return res.status(200).json({ message: "Canción eliminada exitosamente" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error al eliminar la canción" });
+    }
 };
+
 
 // Exportar todas las funciones como un objeto
 export default {
