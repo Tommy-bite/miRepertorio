@@ -7,11 +7,7 @@ const router = Router();
 router.get('/', cancionesController.getCanciones);
 router.post('/' , cancionesController.createCancion)
 router.delete('/:id' , cancionesController.deleteCancion)
-
-router.put('/:uid' ,  (req, res) => {
-    res.json({ ok: "true" });
-})
-
+router.put('/:id' , cancionesController.updateCancion)
 
 
 export default router;

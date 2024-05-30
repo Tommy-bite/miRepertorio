@@ -46,6 +46,25 @@ const deleteCancion = async (id) => {
   }
 };
 
+
+const updateCancion = async (id, editCancion) => {
+    try {
+
+        const {titulo, tono, artista} = editCancion;
+
+      const query = {
+        text: "UPDATE canciones SET titulo = $1, tono = $2, artista = $3 WHERE id = $4",
+        values: [titulo, tono, artista, id],
+      };
+  
+      const { rows } = await pool.query(query);
+  
+      return rows;
+    } catch (error) {
+      throw error;
+    }
+  };
+
 const getCancionById = async (id) => {
     try {
         const query = {
@@ -66,4 +85,5 @@ export const modelCanciones = {
   getCanciones,
   deleteCancion,
   getCancionById,
+  updateCancion
 };

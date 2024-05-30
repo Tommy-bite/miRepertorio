@@ -1,86 +1,123 @@
 import { modelCanciones } from "../model/canciones.model.js";
 
 // Obtener todas las canciones
-const getCanciones =  async (req, res) => {
-    // Lógica para obtener todas las canciones
-    try {
-        const canciones = await modelCanciones.getCanciones();
-        return res.status(201).json({ message: "Se obtienen las canciones", canciones});
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error al crear la canción" });
-    }
+const getCanciones = async (req, res) => {
+  // Lógica para obtener todas las canciones
+  try {
+    const canciones = await modelCanciones.getCanciones();
+    return res
+      .status(201)
+      .json({ message: "Se obtienen las canciones", canciones });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al crear la canción" });
+  }
 };
 
 // Obtener una canción por ID
 const getCancionById = (req, res) => {
-    const { id } = req.params;
-    // Lógica para obtener una canción por ID
-    res.json({ message: `Obteniendo la canción con ID: ${id}` });
+  const { id } = req.params;
+  // Lógica para obtener una canción por ID
+  res.json({ message: `Obteniendo la canción con ID: ${id}` });
 };
 
-
 const createCancion = async (req, res) => {
-    const { titulo, artista, tono } = req.body;
+  const { titulo, artista, tono } = req.body;
 
-    if (!titulo || !artista || !tono) {
-        return res.status(400).json({ message: "Todos los campos son obligatorios" });
+  if (!titulo || !artista || !tono) {
+    return res
+      .status(400)
+      .json({ message: "Todos los campos son obligatorios" });
+  }
+
+  const newCancion = {
+    titulo,
+    artista,
+    tono,
+  };
+
+  try {
+    const cancion = await modelCanciones.createCancion(newCancion);
+    return res.status(201).json({ message: "Canción creada", cancion });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al crear la canción" });
+  }
+};
+
+// Actualizar una canción por ID
+const updateCancion = async (req, res) => {
+  const { id } = req.params;
+  const { titulo, artista, tono } = req.body;
+
+  if (!id || !titulo || !artista || !tono) {
+    return res
+      .status(400)
+      .json({ message: "Todos los campos son obligatorios" });
+  }
+
+  try {
+    const cancion = await modelCanciones.getCancionById(id);
+
+    if (!cancion) {
+      return res
+        .status(400)
+        .json({
+          message: "No se puede actualziar esta canción porque no existe",
+        });
     }
 
-    const newCancion = {
+    const editCancion = {
         titulo,
         artista,
         tono
-    };
-
-    try {
-        const cancion = await modelCanciones.createCancion(newCancion);
-        return res.status(201).json({ message: "Canción creada" , cancion});
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error al crear la canción" });
     }
-};
 
+    await modelCanciones.updateCancion(id, editCancion);
 
-// Actualizar una canción por ID
-const updateCancion = (req, res) => {
-    const { id } = req.params;
-    const { title, artist } = req.body;
-    // Lógica para actualizar una canción por ID
-    res.json({ message: `Canción con ID: ${id} actualizada`, data: { title, artist } });
+    return res.status(200).json({ message: "Canción actualizada exitosamente" });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al eliminar la canción" });
+  }
+
+  // Lógica para actualizar una canción por ID
 };
 
 // Eliminar una canción por ID
 const deleteCancion = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    if (!id) {
-        return res.status(400).json({ message: "El ID es obligatorio" });
+  if (!id) {
+    return res.status(400).json({ message: "El ID es obligatorio" });
+  }
+
+  try {
+    const cancion = await modelCanciones.getCancionById(id);
+
+    if (!cancion) {
+      return res
+        .status(400)
+        .json({
+          message: "No se puede eliminar esta canción porque no existe",
+        });
     }
 
-    try {
-        const cancion = await modelCanciones.getCancionById(id);
+    await modelCanciones.deleteCancion(id);
 
-        if (!cancion) {
-            return res.status(400).json({ message: "No se puede eliminar esta canción porque no existe" });
-        }
-
-        await modelCanciones.deleteCancion(id);
-
-        return res.status(200).json({ message: "Canción eliminada exitosamente" });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error al eliminar la canción" });
-    }
+    return res.status(200).json({ message: "Canción eliminada exitosamente" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error al eliminar la canción" });
+  }
 };
-
 
 // Exportar todas las funciones como un objeto
 export default {
-    getCanciones,
-    getCancionById,
-    createCancion,
-    updateCancion,
-    deleteCancion
+  getCanciones,
+  getCancionById,
+  createCancion,
+  updateCancion,
+  deleteCancion,
 };
