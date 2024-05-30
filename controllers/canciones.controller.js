@@ -1,9 +1,15 @@
 import { modelCanciones } from "../model/canciones.model.js";
 
 // Obtener todas las canciones
-const getCanciones = (req, res) => {
+const getCanciones =  async (req, res) => {
     // Lógica para obtener todas las canciones
-    res.json({ message: "Obteniendo todas las canciones" });
+    try {
+        const canciones = await modelCanciones.getCanciones();
+        return res.status(201).json({ message: "Se obtienen las canciones", canciones});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error al crear la canción" });
+    }
 };
 
 // Obtener una canción por ID

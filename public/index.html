@@ -83,13 +83,12 @@
   let tono = document.getElementById("tono");
 
   let canciones = [];
-  // window.onload = getData();
+  window.onload = getData();
 
   async function getData() {
-    await axios.get(url + "es").then((data) => {
-      canciones = data.data;
+    await axios.get(url ).then((data) => {
+      canciones = data.data.canciones;
       tbody.innerHTML = "";
-      console.log(canciones)
       canciones.forEach((c, i) => {
         tbody.innerHTML += `
         <tr>
@@ -122,7 +121,7 @@
       tono: tono.value,
     };
     console.log(data);
-    axios.post(url, data).then( console.log(data) );
+    axios.post(url, data).then( getData() );
   }
 
   function eliminarCancion(i, id) {

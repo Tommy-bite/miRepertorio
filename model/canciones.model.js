@@ -19,6 +19,22 @@ const createCancion = async (newCancion) => {
     }
 };
 
+const getCanciones = async (newCancion) => {
+    try {
+        
+        const query = {
+            text: "SELECT * FROM canciones",
+        };
+
+        const { rows } = await pool.query(query);
+
+        return rows; 
+    } catch (error) {
+        throw error; 
+    }
+};
+
 export const modelCanciones =  {
     createCancion,
+    getCanciones
 };
